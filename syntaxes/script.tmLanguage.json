@@ -1,0 +1,231 @@
+{
+    "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+    "name": "script",
+    "scopeName": "source.script",
+    "patterns": [
+        {
+            "include": "#numerics"
+        },
+        {
+            "include": "#strings"
+        },
+        {
+            "include": "#comments"
+        },
+        {
+            "include": "#keywords"
+        },
+        {
+            "include": "#constants"
+        },
+        {
+            "include": "#methods"
+        },
+        {
+            "include": "#hover-info"
+        }
+    ],
+    "repository": {
+        "numerics": {
+            "patterns": [
+                {
+                    "name": "constant.numeric.float.script",
+                    "match": "[+-]?\\b(\\d+(\\.\\d+)?)\\b"
+                },
+                {
+                    "name": "constant.numeric.integer.script",
+                    "match": "[+-]?\\b(\\d+)\\b"
+                },
+                {
+                    "name": "constant.numeric.exponent.script",
+                    "match": "[+-]?\\b(\\d+(\\.\\d+)?)[eE]{1}[+-]?\\d+\\b"
+                }
+            ]
+        },
+        "strings": {
+            "patterns": [
+                {
+                    "name": "string.quoted.double.script",
+                    "begin": "\"",
+                    "end": "\"",
+                    "patterns": [
+                        {
+                            "name": "constant.character.escape.script",
+                            "match": "\\."
+                        }
+                    ]
+                },
+                {
+                    "name": "string.quoted.single.script",
+                    "begin": "'",
+                    "end": "'"
+                }
+            ]
+        },
+        "comments": {
+            "patterns": [
+                {
+                    "name": "comment.block.documentation.script",
+                    "begin": "\\s*(###)$",
+                    "end": "\\s*(###)$",
+                    "patterns": [
+                        {
+                            "name": "comment.block.documentation.script",
+                            "begin": "(@param)\\s+(\\w+)",
+                            "end": "(none|void|bool|number|int|float|array|pose|string|struct|import)",
+                            "beginCaptures": {
+                                "1": {
+                                    "name": "entity.name.tag.script"
+                                },
+                                "2": {
+                                    "name": "variable.name.script"
+                                }
+                            },
+                            "endCaptures": {
+                                "1": {
+                                    "name": "entity.name.type.script"
+                                }
+                            }
+                        },
+                        {
+                            "name": "comment.block.documentation.script",
+                            "begin": "(@returns)",
+                            "end": "(none|void|bool|number|int|float|array|pose|string|struct|import)",
+                            "beginCaptures": {
+                                "1": {
+                                    "name": "entity.name.tag.script"
+                                }
+                            },
+                            "endCaptures": {
+                                "1": {
+                                    "name": "entity.name.type.script"
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "include": "#comment-base"
+                }
+            ]
+        },
+        "comment-base": {
+            "patterns": [
+                {
+                    "name": "comment.line.number-sign.script",
+                    "match": "(#|\\$).*$"
+                }
+            ]
+        },
+        "methods": {
+            "patterns": [
+                {
+                    "begin": "\\b(def|thread)\\b",
+                    "end": "\\(.*\\):\\s*$",
+                    "beginCaptures": {
+                        "1": {
+                            "name": "keyword.control.script"
+                        }
+                    },
+                    "contentName": "entity.name.function.script"
+                },
+                {
+                    "begin": "(\\w+)(\\()",
+                    "end": "\\)",
+                    "beginCaptures": {
+                        "1": {
+                            "name": "entity.name.function.script"
+                        }
+                    },
+                    "patterns": [
+                        {
+                            "include": "#strings"
+                        },
+                        {
+                            "include": "#numerics"
+                        },
+                        {
+                            "include": "#constants"
+                        },
+                        {
+                            "include": "#methods"
+                        }
+                    ]
+                }
+            ]
+        },
+        "keywords": {
+            "patterns": [
+                {
+                    "name": "keyword.control.script",
+                    "match": "\\b(while|for|return|end|kill|halt|run|join|enter_critical|exit_critical)\\b"
+                },
+                {
+                    "name": "keyword.control.conditional.script",
+                    "match": "\\b(if|elif|else)\\b"
+                },
+                {
+                    "name": "storage.modifier.script",
+                    "match": "\\b(global|local)\\b"
+                },
+                {
+                    "name": "keyword.operator.logical.script",
+                    "match": "(<=|>=|!=|==|<|>)"
+                },
+                {
+                    "name": "keyword.operator.assignment.script",
+                    "match": "="
+                },
+                {
+                    "name": "keyword.operator.arithmetic.script",
+                    "match": "(\\+|-|\\*|/)"
+                },
+                {
+                    "name": "keyword.other.script",
+                    "match": "\\b(and|or|xor|not)\\b"
+                }
+            ]
+        },
+        "constants": {
+            "patterns": [
+                {
+                    "name": "constant.language.script",
+                    "match": "\\b(True|False)\\b"
+                }
+            ]
+        },
+        "hover-info": {
+            "patterns": [
+                {
+                    "name": "support.other.script",
+                    "begin": "^(void|bool|int|float|number|array|pose|string|struct|import)\\s",
+                    "end": "$",
+                    "beginCaptures": {
+                        "1": {
+                            "name": "entity.name.type.script"
+                        }
+                    },
+                    "patterns": [
+                        {
+                            "name": "entity.name.type.script",
+                            "match": "(none|void|bool|number|int|float|array|pose|string|struct|import)"
+                        },
+                        {
+                            "name": "entity.name.function.script",
+                            "match": "([a-zA-Z_{1}][a-zA-Z0-9_]+)(?=\\()"
+                        },
+                        {
+                            "include": "#strings"
+                        },
+                        {
+                            "include": "#numerics"
+                        },
+                        {
+                            "include": "#constants"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
